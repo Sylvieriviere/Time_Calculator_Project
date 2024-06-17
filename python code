@@ -1,0 +1,47 @@
+def add_time(start, duration, day=None):
+    start_split = start.split()
+    start_time, AM_PM = start_split[0], start_split[1]
+    start_hour, start_minute = map(int, start_time.split(':'))
+    duration_hour, duration_minute = map(int, duration.split(':'))
+    days_list = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday']
+    
+    if AM_PM == 'PM':
+        start_hour += 12
+    if start_hour == 12 and AM_PM == 'AM':
+        start_hour = 0
+    
+    total_minutes = start_hour * 60 + start_minute + duration_hour * 60 + duration_minute
+    hour_output, minute_output = divmod(total_minutes, 60)
+    
+    n = hour_output // 24
+    hour_output %= 24
+    
+    if hour_output == 0:
+        hour_output = 12
+        AM_PM_output = 'AM'
+    elif hour_output == 12:
+        AM_PM_output = 'PM' if AM_PM == 'AM' else 'AM'
+    elif hour_output > 12:
+        hour_output -= 12
+        AM_PM_output = 'PM'
+    else:
+        AM_PM_output = 'AM'
+    
+    if n == 0:
+        number_days = ''
+    elif n == 1:
+        number_days = " (next day)"
+    else:
+        number_days = f" ({n} days later)"
+    
+    if day:
+        day = day.capitalize()
+        if day in days_list:
+            day_position = days_list.index(day)
+            day_output_position = (day_position + n) % len(days_list)
+            day_output = days_list[day_output_position]
+            return f"{hour_output}:{minute_output:02d} {AM_PM_output}, {day_output}{number_days}"
+        else:
+            raise ValueError("Invalid day of the week")
+    
+    return f"{hour_output}:{minute_output:02d} {AM_PM_output}{number_days}"
